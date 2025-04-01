@@ -3,122 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador de Finanças Pessoais</title>
+    <title>Gerenciador Financeiro</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <main class="finance-app">
-        <!-- Seção de Gerenciamento de Saldo -->
-        <section class="finance-section balance-container">
-            <header class="section-header">
-                <h1 class="finance-title">
-                    <i class="icon-wallet"></i> Gerenciador Financeiro
-                </h1>
-            </header>
-            
-            <article class="balance-card">
-                <h2 class="section-title">
-                    <i class="icon-cog"></i> Configuração Inicial
-                </h2>
-                
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="initial-balance" class="input-label">Valor Inicial</label>
-                        <input type="number" id="initial-balance" class="input-field" 
-                               placeholder="R$ 0,00" step="0.01" min="0" inputmode="decimal">
-                        <span class="currency-symbol">R$</span>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="initial-description" class="input-label">Descrição</label>
-                        <input type="text" id="initial-description" class="input-field" 
-                               placeholder="Ex: Saldo inicial ou depósito">
-                    </div>
-                    
-                    <button id="set-balance-btn" class="action-button confirm-button">
-                        <i class="icon-check"></i> Definir Saldo
-                    </button>
+    <div class="logo-container">
+        <img src="logoheader2.png" alt="Meu Gerenciador Financeiro" class="logo">
+    </div>
+    <div class="finance-app">
+        <!-- Seção de Adicionar Transação -->
+        <div class="finance-section">
+            <h2 class="section-title">Meu Caixa</h2>
+            <form id="transactionForm">
+                <div class="input-group">
+                    <label class="input-label">Descrição</label>
+                    <input type="text" id="description" class="input-field" required>
                 </div>
-                
-                <div class="balance-display">
-                    <h3 class="current-balance-title">Saldo Atual</h3>
-                    <p class="balance-amount" id="balance-display">R$ 0,00</p>
+                <div class="input-group">
+                    <label class="input-label">Valor (R$)</label>
+                    <input type="number" id="amount" class="input-field" step="0.01" required>
                 </div>
-            </article>
-        </section>
+                <div class="input-group">
+                    <label class="input-label">Tipo</label>
+                    <select id="type" class="input-field">
+                        <option value="income">Receita</option>
+                        <option value="expense">Despesa</option>
+                    </select>
+                </div>
+                <button type="submit" class="action-button submit-button">Adicionar</button>
+            </form>
+        </div>
 
-        <!-- Seção de Transações e Gráficos -->
-        <section class="finance-section transactions-container">
-            <article class="transaction-card">
-                <h2 class="section-title">
-                    <i class="icon-exchange"></i> Nova Transação
-                </h2>
-                
-                <form id="transaction-form" class="transaction-form">
-                    <div class="form-row">
-                        <div class="input-group">
-                            <label for="transaction-type" class="input-label">Tipo</label>
-                            <select id="transaction-type" class="input-field" required>
-                                <option value="" disabled selected>Selecione</option>
-                                <option value="Entrada">Entrada</option>
-                                <option value="Saída">Saída</option>
-                            </select>
-                        </div>
-                        
-                        <div class="input-group">
-                            <label for="transaction-amount" class="input-label">Valor</label>
-                            <input type="number" id="transaction-amount" class="input-field" 
-                                   placeholder="R$ 0,00" step="0.01" min="0.01" required>
-                            <span class="currency-symbol">R$</span>
-                        </div>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="transaction-description" class="input-label">Descrição</label>
-                        <input type="text" id="transaction-description" class="input-field" 
-                               placeholder="Ex: Salário, Aluguel, Supermercado" required>
-                    </div>
-                    
-                    <div class="input-group category-group" id="category-group">
-                        <label for="transaction-category" class="input-label">Categoria</label>
-                        <select id="transaction-category" class="input-field">
-                            <option value="Alimentação">Alimentação</option>
-                            <option value="Transporte">Transporte</option>
-                            <option value="Lazer">Lazer</option>
-                            <option value="Moradia">Moradia</option>
-                            <option value="Educação">Educação</option>
-                            <option value="Saúde">Saúde</option>
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="action-button submit-button">
-                        <i class="icon-plus"></i> Registrar Transação
-                    </button>
-                </form>
-            </article>
+        <!-- Seção de Visualização -->
+        <div class="finance-section">
+            <h2 class="section-title">Suas Transações</h2>
+            <div class="balance-display">
+                <p class="current-balance-title">Saldo Atual</p>
+                <p class="balance-amount" id="currentBalance">R$ 0,00</p>
+            </div>
+            <ul class="transaction-list" id="transactionList"></ul>
             
-            <article class="history-card">
-                <h2 class="section-title">
-                    <i class="icon-history"></i> Histórico Financeiro
-                </h2>
-                <div class="transaction-history-container">
-                    <ul id="transaction-history" class="transaction-list"></ul>
-                </div>
-            </article>
-            
-            <article class="chart-card">
-                <h2 class="section-title">
-                    <i class="icon-chart"></i> Análise de Gastos
-                </h2>
-                <div class="chart-container">
-                    <canvas id="expense-chart" aria-label="Gráfico de distribuição de gastos por categoria"></canvas>
-                    <div class="chart-legend" id="chart-legend"></div>
-                </div>
-            </article>
-        </section>
-    </main>
+            <div class="chart-container">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
 
-    <script src="script.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
